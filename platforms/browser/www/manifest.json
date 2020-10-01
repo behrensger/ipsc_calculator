@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "SimpleIpscCalc",
+  "short_name": "SimpleIpscCalc",
+  "version": "de.openaqua.simplecalc",
+  "description": "A Simple IPSC calculator",
+  "author": "Apache Cordova Team",
+  "icons": [],
+  "start_url": "index.html"
+}

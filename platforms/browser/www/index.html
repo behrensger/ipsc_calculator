@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <title>Simple IPSC Calculator</title>
+</head>
+<body>
+<ons-page>
+  <ons-toolbar>
+    <div class="center">Simple IPSC Calc</div>
+  </ons-toolbar>
+  <ons-list>
+     <ons-list-header>Settings</ons-list-header>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Major Factor</div>
+      <div class="right"><ons-switch id="major" ></ons-switch></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Min Shoots</div>
+      <div class="right"><input id="min" type="number" value=10  min=1 inputmode="numeric" step=1  required/></div>
+    </ons-list-item>
+
+
+    <ons-list-header>Stage</ons-list-header>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Time in Sec</div>
+      <div class="right"><input id="time" type="number" value=10  min=1 inputmode="numeric" step=0.1  required/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">No Shoot</div>
+      <div class="right"><input id="ns" type="number" value=0 min=0  inputmode="numeric" step=1  required/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Miss</div>
+      <div class="right"><input id="miss" type="number" value=0  min=0 inputmode="numeric" step=1  required/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Popper</div>
+      <div class="right"><input id="pop" type=number value=0   min=0  inputmode="numeric" step=1  required/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Delta</div>
+      <div class="right"><input id="d" type=number value=0   min=0   inputmode="numeric" step=1 required/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Charlie</div>
+      <div class="right"><input id="c" type="number" value=0  min=0  inputmode="numeric" step=1  required height=1.5/></div>
+    </ons-list-item>
+     <ons-list-item modifier="nodivider">
+      <div class="center">Alpha</div>
+      <div class="right"><input id="a" type="number" value=0 disabled /></div>
+    </ons-list-item>
+ 
+
+
+    <ons-list-header>Results</ons-list-header>
+  
+     <ons-list-item modifier="nodivider">
+      <div class="center">Hitfactor</div>
+      <div class="right"><input id="hit" type="number" value=0 disabled /></div>
+    </ons-list-item>
+  </ons-list>
+<script>
+const default_min = 10;
+var pre_min = 10;
+var pre_time = 10;
+var pre_ns = 0;
+var pre_miss = 0;
+var pre_pop = 0;
+var pre_d = 0;
+var pre_c = 0;
+
+  
+ons.ready(function() {
+  document.getElementById("major").onchange = clickHandler;
+  document.getElementById("min").onchange = clickHandler;
+  document.getElementById("time").onchange = clickHandler;
+  document.getElementById("miss").onchange = clickHandler;
+  document.getElementById("ns").onchange = clickHandler;
+  document.getElementById("pop").onchange = clickHandler;
+  document.getElementById("d").onchange = clickHandler;
+  document.getElementById("c").onchange = clickHandler;
+});
+
+  
+
+
+function clickHandler(event) {
+    calc(this.id);
+};
+
+function getPreValue(id){
+  if(id === 'min'){
+    return pre_min;
+  } else if (id === 'time'){
+    return pre_time;
+  } else if (id === 'ns'){
+    return pre_ns;
+  } else if (id === 'miss'){
+    return pre_miss;
+  } else if (id === 'pop'){
+    return pre_pop;
+  } else if (id === 'd'){
+    return pre_d;
+  } else if (id === 'c'){
+    return pre_c;
+  } else {
+    return 0;
+  }
+};
+function setPreValue(id, value){
+  if(id === 'min'){
+    pre_min = value;
+  } else if (id === 'time'){
+     pre_time = value;
+  } else if (id === 'ns'){
+     pre_ns = value;
+  } else if (id === 'miss'){
+     pre_miss = value;
+  } else if (id === 'pop'){
+     pre_pop = value;
+  } else if (id === 'd'){
+     pre_d = value;
+  } else if (id === 'c'){
+     pre_c = value;
+  }
+};
+
+function fixInputInt(id, min, max, def) {
+    var element = document.getElementById(id);
+    var x = element.value;
+    var y = x / 1;
+    if(y == x){
+      if (y < min) {
+          y = min;
+      } else if (x > max) {
+          y = max;
+      }
+      element.value = y;
+      setPreValue(id, y);
+      return y;
+    } else {
+      ons.notification.alert('a');
+      return getPreValue(id);
+    }
+};
+
+function fixInputFloat(name, min, max, def) {
+    var element = document.getElementById(name);
+    var x = element.value;
+    //if(Number.isFloat(x)){
+    //  x = def;
+    //}
+    if (x < min) {
+        x = min;
+    } else if (x > max) {
+        x = max;
+    }
+    element.value = x;
+    return x;
+};
+
+var calc = function(id) {
+    //id === id des aktuellen feldes
+    //ons.notification.alert('calc()' + id);
+    var min = fixInputInt('min', 1, 100, 10);
+    var time = fixInputInt('time', 1, 900, 10);
+    var ns = fixInputInt('ns', 0, 100, 0);
+    var miss = fixInputInt('miss', 0, 100, 0);
+    var pop = fixInputInt('pop', 0, 100, 0);
+    var d = fixInputInt('d', 0, 100, 0);
+    var c = fixInputInt('c', 0, 100, 0);
+    var hit = document.getElementById('hit').value;
+    //ons.notification.alert('calc() is done');
+
+    //calc a
+    var a = min - miss - d - c - pop;
+    document.getElementById('a').value = a;
+
+    //calc stagepoints sp
+    var sp = 0;
+    if (document.getElementById('major').checked) {
+        sp = a * 5 + c * 4 + d * 2 + pop * 5 - miss * 10 - ns * 10;
+    } else {
+        sp = a * 5 + c * 3 + d * 1 + pop * 5 - miss * 10 - ns * 10;
+    }
+    if (sp < 0) {
+        sp = 0;
+    }
+
+    //calc rounded hitfactor
+    document.getElementById('hit').value = Math.round(((sp / time) + Number.EPSILON) * 100) / 100;
+
+    //ons.notification.alert('calc() is done');
+};
+
+var reset = function() {
+    document.getElementById('time').value = default_min;
+    document.getElementById('ns').value = 0;
+    document.getElementById('miss').value = 0;
+    document.getElementById('pop').value = 0;
+    document.getElementById('d').value = 0;
+    document.getElementById('c').value = 0;
+    document.getElementById('a').value = document.getElementById('min').value;
+    document.getElementById('hit').value = 0;
+    calc();
+};
+
+ons.getScriptPage().onInit = function() {
+    //calc();
+};
+	</script>
+</ons-page>
+</body>
+</html>
